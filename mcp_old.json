@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "strapi": {
+      "command": "node",
+      "args": [
+        "D:\\work\\mcp-strapi\\dist\\index.js"
+      ],
+      "env": {
+        "STRAPI_URL": "http://localhost:1337",
+        "STRAPI_API_TOKEN": "0f90571c57a4bc88808439894db662aa17e4f1c0f368bb11f621aa64a98ea9cddbabcf3308385ed1c682ad2e304acce0adb8daac8061722a3cf4767b7ae5c359d8293f1225d41060e2623e2cc1a7be39d8a0e954031b8363109bcc2acd43ad934b295c4081c8a5de50528fd1653631441d2ce66280c1bcebeab5e2bad0ef1321"
+      }
+    }
+  }
+}
