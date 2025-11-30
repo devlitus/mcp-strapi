@@ -1,7 +1,7 @@
 # Plan: MCP Server para CRUD de Content Types de Strapi
 
 ## Resumen
-Crear un servidor Model Context Protocol (MCP) en TypeScript que proporcione operaciones CRUD completas para los content types de Strapi, ejecutándose en un contenedor Docker.
+Crear un servidor Model Context Protocol (MCP) en TypeScript que proporcione operaciones CRUD completas para los content types de Strapi, con gestión de medios e internacionalización.
 
 **IMPORTANTE**: Este plan debe copiarse a la carpeta `docs/PLAN.md` al iniciar la implementación para referencia futura.
 
@@ -14,7 +14,6 @@ Crear un servidor Model Context Protocol (MCP) en TypeScript que proporcione ope
 - **Validación**: Zod para schemas
 - **HTTP Client**: Fetch nativo (incluido en Node.js 22+)
 - **Transport**: Stdio (StdioServerTransport)
-- **Contenedor**: Docker con multi-stage build
 
 ### 2. Estructura del Proyecto
 
@@ -37,12 +36,10 @@ mcp-strapi/
 │   │   └── index.ts
 │   └── config/                 # Configuración
 │       └── environment.ts      # Variables de entorno
-├── Dockerfile                   # Multi-stage build
-├── docker-compose.yml          # Orquestación (solo MCP)
-├── .dockerignore
 ├── .env.example                # Template de variables de entorno
 ├── package.json
 ├── tsconfig.json
+├── CLAUDE.md
 └── README.md
 ```
 
@@ -130,20 +127,12 @@ NODE_ENV=production
 3. **Autenticación Strapi**: Sin autenticación en v1 (se agregará en v2)
 4. **Validación de Content Types**: Verificar que el contentType sea válido antes de operar
 
-### 6. Docker Configuration
+### 6. Configuración de Producción
 
-#### Dockerfile (Multi-stage)
-- **Stage 1 (builder)**: Compilar TypeScript
-- **Stage 2 (production)**: Imagen ligera con solo runtime
-- Base: `node:22-alpine` (Node.js 22+ requerido)
-- Usuario no-root para seguridad
-- Entry point configurable para stdio transport
-
-#### Docker Compose
-- **Solo servicio MCP server** (Strapi corre externamente)
-- Network mode: host (para acceder a localhost:1337)
-- Variables de entorno para STRAPI_URL
-- Sin volúmenes necesarios (stateless)
+- **Node.js 22+** requerido (soporte nativo de fetch)
+- **Variables de entorno** para configuración de Strapi
+- **Stdio transport** para integración con Claude Desktop
+- **Sin dependencias de contenedorización**
 
 ### 7. Mejores Prácticas Implementadas
 
@@ -183,16 +172,15 @@ NODE_ENV=production
 1. `docs/PLAN.md` - **Copia de este plan para referencia permanente**
 2. `src/index.ts` - Entry point con StdioServerTransport
 3. `src/server.ts` - Configuración del McpServer y registro de tools
-4. `src/tools/*.ts` - Implementación de cada herramienta CRUD (5 archivos)
-5. `src/services/strapi-client.ts` - Cliente HTTP reutilizable usando **fetch nativo** (sin auth)
+4. `src/tools/*.ts` - Implementación de cada herramienta CRUD (13 herramientas)
+5. `src/services/strapi-client.ts` - Cliente HTTP reutilizable usando **fetch nativo**
 6. `src/types/index.ts` - Tipos TypeScript compartidos
 7. `src/config/environment.ts` - Configuración de variables de entorno
-8. `Dockerfile` - Multi-stage build optimizado para stdio
-9. `docker-compose.yml` - Configuración simple (solo MCP)
-10. `package.json` - Dependencias (SDK, zod, dotenv - **sin axios**)
-11. `tsconfig.json` - Configuración TypeScript strict
-12. `README.md` - Documentación de uso con ejemplos
-13. `.env.example` - Template de variables de entorno
+8. `package.json` - Dependencias (SDK, zod, dotenv - **sin axios**)
+9. `tsconfig.json` - Configuración TypeScript strict
+10. `README.md` - Documentación de uso con ejemplos
+11. `CLAUDE.md` - Guía para Claude Code
+12. `.env.example` - Template de variables de entorno
 
 ## Implementación Paso a Paso
 
@@ -227,17 +215,7 @@ Implementar cada tool en `src/tools/`:
 4. **update.ts**: Validación parcial de datos
 5. **delete.ts**: Confirmación de eliminación
 
-### Fase 5: Dockerización
-1. Crear `Dockerfile` multi-stage:
-   - Build stage: compilar TS con node:22-alpine
-   - Runtime stage: node:22-alpine
-   - ENTRYPOINT para ejecutar el servidor
-   - Verificación de versión de Node.js
-2. Crear `docker-compose.yml`:
-   - Network mode: host
-   - Variable STRAPI_URL
-
-### Fase 6: Documentación
+### Fase 5: Documentación
 1. README.md con:
    - Instrucciones de instalación
    - Ejemplos de uso de cada tool
@@ -272,8 +250,11 @@ El README incluirá la configuración JSON para agregar el servidor a Claude Des
 {
   "mcpServers": {
     "strapi": {
-      "command": "docker",
-      "args": ["run", "--rm", "-i", "--network=host", "mcp-strapi"]
+      "command": "node",
+      "args": ["/ruta/absoluta/a/dist/index.js"],
+      "env": {
+        "STRAPI_URL": "http://localhost:1337"
+      }
     }
   }
 }
