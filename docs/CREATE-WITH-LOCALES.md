@@ -15,7 +15,7 @@ Esta herramienta:
 ### Requeridos
 
 - **contentType** (string): Nombre PLURAL del content type (ej: "categories", "products")
-- **defaultLocale** (string): El locale principal (ej: "es-ES", "en")
+- **defaultLocale** (string): El locale principal (ej: "es", "en")
 - **data** (object): Los datos de la entrada en el locale por defecto
 
 ### Opcionales
@@ -40,7 +40,7 @@ En Strapi v5 con i18n:
 Si el campo **"name" es UNIQUE**, entonces:
 
 - ✅ `name`: "Camisetas" (igual en todos los locales)
-- ❌ `name`: "Camisetas" en es-ES, "T-shirts" en en, "Samarretes" en ca (ERROR)
+- ❌ `name`: "Camisetas" en es, "T-shirts" en en, "Samarretes" en ca (ERROR)
 
 **Solución**: Usa el MISMO nombre en todos los locales, solo traduce los campos NO-UNIQUE como "description"
 
@@ -49,7 +49,7 @@ Si el campo **"name" es UNIQUE**, entonces:
 ```json
 {
   "contentType": "categories",
-  "defaultLocale": "es-ES",
+  "defaultLocale": "es",
   "data": {
     "name": "Tops",
     "slug": "tops-infantiles",
@@ -99,11 +99,11 @@ La herramienta retorna:
 ```json
 {
   "success": true,
-  "defaultLocale": "es-ES",
+  "defaultLocale": "es",
   "message": "Entry created successfully with all localizations",
   "mainEntry": {
     "documentId": "rk3dq0s0wkzejepfai1xxd6z",
-    "locale": "es-ES",
+    "locale": "es",
     "data": { "name": "Tops", "slug": "tops-infantiles", ... }
   },
   "localizations": [
@@ -130,7 +130,7 @@ La herramienta retorna:
 
 ## Cómo funciona internamente
 
-1. **POST /api/categories?locale=es-ES** → Crea la entrada principal en español
+1. **POST /api/categories?locale=es** → Crea la entrada principal en español
 
    - Retorna: documentId = `abc123`
 
@@ -141,7 +141,7 @@ La herramienta retorna:
 3. **PUT /api/categories/abc123?locale=ca** → Actualiza la MISMA entrada con datos en catalán
    - Retorna: documentId = `abc123` (el mismo)
 
-**Resultado final**: Una sola entry (`abc123`) que contiene 3 versiones de contenido (es-ES, en, ca)
+**Resultado final**: Una sola entry (`abc123`) que contiene 3 versiones de contenido (es, en, ca)
 
 ## Ventajas
 

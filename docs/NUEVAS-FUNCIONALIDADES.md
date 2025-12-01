@@ -145,7 +145,7 @@ Añade un campo "title" de tipo string al content type api::product.product con 
 
 ```
 Crea una categoría en español, inglés y catalán:
-- Español (es-ES): name="Tops", description="Camisetas, camisas y blusas infantiles"
+- Español (es): name="Tops", description="Camisetas, camisas y blusas infantiles"
 - Inglés (en): name="Tops", description="T-shirts, shirts and children's blouses"
 - Catalán (ca): name="Tops", description="Samarretes, camises i blusas infantils"
 ```
@@ -155,10 +155,10 @@ Crea una categoría en español, inglés y catalán:
 ```json
 {
   "success": true,
-  "defaultLocale": "es-ES",
+  "defaultLocale": "es",
   "mainEntry": {
     "documentId": "rk3dq0s0wkzejepfai1xxd6z",
-    "locale": "es-ES",
+    "locale": "es",
     "data": { "name": "Tops", ... }
   },
   "localizations": [

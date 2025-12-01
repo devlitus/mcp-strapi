@@ -22,17 +22,21 @@ export const readToolSchema = z.object({
   locale: z
     .string()
     .optional()
-    .describe('Locale para i18n (ej: "en", "es-ES", "ca")'),
+    .describe('Locale para i18n (ej: "en", "es", "ca")'),
   validateLanguage: z
     .boolean()
     .optional()
     .default(true)
-    .describe("Validar que el contenido esté en el idioma correcto (default: true)"),
+    .describe(
+      "Validar que el contenido esté en el idioma correcto (default: true)"
+    ),
   strictMode: z
     .boolean()
     .optional()
     .default(false)
-    .describe("Modo estricto: falla si no hay traducción propia y se devuelve fallback (default: false)"),
+    .describe(
+      "Modo estricto: falla si no hay traducción propia y se devuelve fallback (default: false)"
+    ),
 });
 
 export const readToolHandler = async (params: {
@@ -65,15 +69,11 @@ export const readToolHandler = async (params: {
     let validationResults = null;
 
     if (params.validateLanguage !== false && params.locale) {
-      validationResults = validateDocumentLanguage(
-        result.data,
-        params.locale,
-        {
-          checkMixedLanguages: true,
-          minimumConfidence: 30,
-          strictMode: params.strictMode || false,
-        }
-      );
+      validationResults = validateDocumentLanguage(result.data, params.locale, {
+        checkMixedLanguages: true,
+        minimumConfidence: 30,
+        strictMode: params.strictMode || false,
+      });
 
       // In strict mode, fail if validation fails
       if (params.strictMode && !validationResults.isValid) {
@@ -81,7 +81,11 @@ export const readToolHandler = async (params: {
           content: [
             {
               type: "text" as const,
-              text: `❌ Error en modo estricto al leer ${params.documentId} de ${params.contentType}:${formatValidationResults(validationResults)}`,
+              text: `❌ Error en modo estricto al leer ${
+                params.documentId
+              } de ${params.contentType}:${formatValidationResults(
+                validationResults
+              )}`,
             },
           ],
           isError: true,

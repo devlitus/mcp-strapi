@@ -32,11 +32,12 @@ La herramienta `strapi-read` ahora incluye validación automática de idioma cua
 
 ```javascript
 // Leer con validación automática (default)
-strapi-read({
-  contentType: "categories",
-  documentId: "abc123",
-  locale: "en"
-})
+strapi -
+  read({
+    contentType: "categories",
+    documentId: "abc123",
+    locale: "en",
+  });
 
 // Resultado incluye:
 // ✅ Validación de idioma
@@ -48,12 +49,13 @@ strapi-read({
 
 ```javascript
 // En modo estricto, falla si no hay traducción propia
-strapi-read({
-  contentType: "categories",
-  documentId: "abc123",
-  locale: "en",
-  strictMode: true
-})
+strapi -
+  read({
+    contentType: "categories",
+    documentId: "abc123",
+    locale: "en",
+    strictMode: true,
+  });
 
 // Si "en" no tiene traducción propia:
 // ❌ Error: "MODO ESTRICTO: No se permite usar contenido heredado"
@@ -70,7 +72,7 @@ Successfully read entry abc123 from categories (locale: en)
 
 🌐 Estado de Localización:
    Traducción propia: Sí
-   Locales disponibles: es-ES, en, ca
+   Locales disponibles: es, en, ca
 ```
 
 ---
@@ -86,10 +88,11 @@ La herramienta `strapi-list` ahora muestra un resumen de localizaciones para cad
 #### Ejemplo:
 
 ```javascript
-strapi-list({
-  contentType: "categories",
-  locale: "en"
-})
+strapi -
+  list({
+    contentType: "categories",
+    locale: "en",
+  });
 ```
 
 #### Salida de Ejemplo:
@@ -101,14 +104,14 @@ Successfully listed 3 entries from categories (locale: en)
 
 📄 Entrada xyz789:
    Locale actual: en
-   Traducciones disponibles: es-ES, en, ca
+   Traducciones disponibles: es, en, ca
    Traducción propia: ✅ Sí
 
 📄 Entrada abc123:
-   Locale actual: es-ES
-   Traducciones disponibles: es-ES, en, ca
+   Locale actual: es
+   Traducciones disponibles: es, en, ca
    Traducción propia: ⚠️ No (heredada)
-   ⚠️ Heredado desde: es-ES
+   ⚠️ Heredado desde: es
 ```
 
 ---
@@ -126,14 +129,15 @@ La herramienta `strapi-update` ahora valida el contenido **antes** de actualizar
 #### Ejemplo Básico:
 
 ```javascript
-strapi-update({
-  contentType: "categories",
-  documentId: "abc123",
-  locale: "en",
-  data: {
-    description: "Discover our collection of clothing..."
-  }
-})
+strapi -
+  update({
+    contentType: "categories",
+    documentId: "abc123",
+    locale: "en",
+    data: {
+      description: "Discover our collection of clothing...",
+    },
+  });
 
 // ✅ Valida que el texto esté en inglés
 // ⚠️ Alerta si detecta mezcla de idiomas
@@ -143,15 +147,16 @@ strapi-update({
 #### Ejemplo con Modo Estricto:
 
 ```javascript
-strapi-update({
-  contentType: "categories",
-  documentId: "abc123",
-  locale: "en",
-  strictMode: true,
-  data: {
-    description: "Mixed content with palabras en español"
-  }
-})
+strapi -
+  update({
+    contentType: "categories",
+    documentId: "abc123",
+    locale: "en",
+    strictMode: true,
+    data: {
+      description: "Mixed content with palabras en español",
+    },
+  });
 
 // ❌ Falla con error:
 // "Error en modo estricto: No se puede actualizar debido a inconsistencias de idioma"
@@ -172,7 +177,7 @@ Campo "description": ⚠️ Contenido multiidioma detectado: EN (60%), ES (25%)
 
 🌐 Estado de Localización:
    Traducción propia: Sí
-   Locales disponibles: es-ES, en, ca
+   Locales disponibles: es, en, ca
 
 ⚠️ Advertencias:
    Campo "description": ⚠️ Contenido multiidioma detectado: EN (60%), ES (25%)
@@ -240,11 +245,11 @@ Analiza el estado de localización de un documento.
 const result = analyzeLocalizationStatus(document, "en");
 // {
 //   documentId: "abc123",
-//   currentLocale: "es-ES",
+//   currentLocale: "es",
 //   isOwnTranslation: true,
-//   availableLocales: ["es-ES", "en", "ca"],
-//   inheritedFrom: "es-ES",
-//   warning: "⚠️ Locale solicitado \"en\" no encontrado. Mostrando fallback desde \"es-ES\""
+//   availableLocales: ["es", "en", "ca"],
+//   inheritedFrom: "es",
+//   warning: "⚠️ Locale solicitado \"en\" no encontrado. Mostrando fallback desde \"es\""
 // }
 ```
 
@@ -253,6 +258,7 @@ const result = analyzeLocalizationStatus(document, "en");
 Validación completa de un documento, incluyendo todos los campos de texto.
 
 **Opciones:**
+
 - `checkMixedLanguages` (boolean, default: `true`)
 - `minimumConfidence` (number, default: `30`)
 - `strictMode` (boolean, default: `false`)
@@ -261,7 +267,7 @@ Validación completa de un documento, incluyendo todos los campos de texto.
 const result = validateDocumentLanguage(document, "en", {
   checkMixedLanguages: true,
   minimumConfidence: 30,
-  strictMode: true
+  strictMode: true,
 });
 // {
 //   isValid: true/false,
@@ -283,45 +289,49 @@ const result = validateDocumentLanguage(document, "en", {
 
 ```javascript
 // 1. Actualizar español (locale por defecto)
-strapi-update({
-  contentType: "categories",
-  documentId: "abc123",
-  locale: "es-ES",
-  data: {
-    description: "Descubre nuestra colección de ropa y accesorios..."
-  }
-})
+strapi -
+  update({
+    contentType: "categories",
+    documentId: "abc123",
+    locale: "es",
+    data: {
+      description: "Descubre nuestra colección de ropa y accesorios...",
+    },
+  });
 
 // 2. Actualizar inglés
-strapi-update({
-  contentType: "categories",
-  documentId: "abc123",
-  locale: "en",
-  data: {
-    description: "Discover our collection of clothing and accessories..."
-  }
-})
+strapi -
+  update({
+    contentType: "categories",
+    documentId: "abc123",
+    locale: "en",
+    data: {
+      description: "Discover our collection of clothing and accessories...",
+    },
+  });
 
 // 3. Actualizar catalán
-strapi-update({
-  contentType: "categories",
-  documentId: "abc123",
-  locale: "ca",
-  data: {
-    description: "Descobreix la nostra col·lecció de roba i accessoris..."
-  }
-})
+strapi -
+  update({
+    contentType: "categories",
+    documentId: "abc123",
+    locale: "ca",
+    data: {
+      description: "Descobreix la nostra col·lecció de roba i accessoris...",
+    },
+  });
 ```
 
 ### Escenario 2: Verificar Estado de Traducciones
 
 ```javascript
 // Listar todas las categorías y ver estado de traducciones
-strapi-list({
-  contentType: "categories",
-  locale: "en",
-  showLocalizationSummary: true
-})
+strapi -
+  list({
+    contentType: "categories",
+    locale: "en",
+    showLocalizationSummary: true,
+  });
 
 // Verás cuáles tienen traducción propia y cuáles heredan contenido
 ```
@@ -330,12 +340,13 @@ strapi-list({
 
 ```javascript
 // Para contenido crítico, usar modo estricto
-strapi-read({
-  contentType: "legal-documents",
-  documentId: "terms-conditions",
-  locale: "en",
-  strictMode: true
-})
+strapi -
+  read({
+    contentType: "legal-documents",
+    documentId: "terms-conditions",
+    locale: "en",
+    strictMode: true,
+  });
 
 // Falla si no hay traducción propia en inglés
 // Garantiza que no se muestre contenido heredado

@@ -7,7 +7,7 @@ import { strapiClient } from "../services/strapi-client.js";
  * Esta herramienta crea una entrada multilingüe en Strapi v5 de forma FLEXIBLE.
  *
  * ✨ NUEVO: Ahora se adapta automáticamente a los idiomas disponibles en Strapi:
- * - Si pasas "es-ES" pero Strapi solo tiene "es", lo usa automáticamente
+ * - Si pasas "es" pero Strapi solo tiene "es", lo usa automáticamente
  * - Detecta los locales disponibles y los valida antes de usarlos
  * - Salta locales duplicados o conflictivos automáticamente
  * - Te muestra qué locales están realmente disponibles
@@ -115,10 +115,10 @@ export const createWithLocalesToolHandler = async (params: {
       );
     }
 
-    // Normalizar defaultLocale: si el usuario pasa "es-ES" pero solo existe "es", adaptarse
+    // Normalizar defaultLocale: si el usuario pasa "es" pero solo existe "es", adaptarse
     let effectiveDefaultLocale = params.defaultLocale;
     if (!availableLocales.includes(params.defaultLocale)) {
-      const localeBase = params.defaultLocale.split("-")[0]; // obtener "es" de "es-ES"
+      const localeBase = params.defaultLocale.split("-")[0]; // obtener "es" de "es"
       const matchedLocale = availableLocales.find(
         (loc) => loc.split("-")[0] === localeBase
       );
@@ -318,15 +318,15 @@ export const createWithLocalesToolHandler = async (params: {
  *
  * En Strapi v5, el sistema de internacionalización (i18n) funciona de la siguiente manera:
  * - Una sola entrada (documentId) contiene todos los locales
- * - Cuando creas una entrada con ?locale=es-ES, creas la entrada en ese locale
+ * - Cuando creas una entrada con ?locale=es, creas la entrada en ese locale
  * - Cuando actualizas la misma entrada con ?locale=en, actualizas los datos EN ESE LOCALE
  * - NO se crean entries separadas, sino que es la misma entry con datos diferentes por locale
  * - El campo "localizations" es una relación entre entradas DIFERENTES si quieres contenido separado
  *
  * Para crear content type multilingüe:
- * 1. POST /api/categories?locale=es-ES con datos en español
+ * 1. POST /api/categories?locale=es con datos en español
  * 2. PUT /api/categories/{documentId}?locale=en con datos en inglés
  * 3. PUT /api/categories/{documentId}?locale=ca con datos en catalán
  *
- * Resultado: Una sola entry con 3 versiones de contenido (es-ES, en, ca)
+ * Resultado: Una sola entry con 3 versiones de contenido (es, en, ca)
  */

@@ -10,7 +10,9 @@ export const createToolSchema = z.object({
   locale: z
     .string()
     .optional()
-    .describe('Locale para crear la entrada en un idioma específico (ej: "en", "es-ES", "ca")'),
+    .describe(
+      'Locale para crear la entrada en un idioma específico (ej: "en", "es-ES", "ca")'
+    ),
 });
 
 export const createToolHandler = async (params: {

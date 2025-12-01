@@ -25,7 +25,9 @@ export const updateToolSchema = z.object({
   locale: z
     .string()
     .optional()
-    .describe('Locale para actualizar una localización específica en i18n (ej: "en", "es-ES", "ca")'),
+    .describe(
+      'Locale para actualizar una localización específica en i18n (ej: "en", "es", "ca")'
+    ),
   validateBeforeUpdate: z
     .boolean()
     .optional()
@@ -35,7 +37,9 @@ export const updateToolSchema = z.object({
     .boolean()
     .optional()
     .default(false)
-    .describe("Modo estricto: falla si hay inconsistencias de idioma (default: false)"),
+    .describe(
+      "Modo estricto: falla si hay inconsistencias de idioma (default: false)"
+    ),
 });
 
 export const updateToolHandler = async (params: {
@@ -49,9 +53,9 @@ export const updateToolHandler = async (params: {
 }) => {
   try {
     console.error(
-      `[UPDATE TOOL] Updating entry ${params.documentId} in ${params.contentType}${
-        params.locale ? ` (locale: ${params.locale})` : ""
-      }`
+      `[UPDATE TOOL] Updating entry ${params.documentId} in ${
+        params.contentType
+      }${params.locale ? ` (locale: ${params.locale})` : ""}`
     );
 
     // Pre-update validation if requested and locale is specified
@@ -80,7 +84,9 @@ export const updateToolHandler = async (params: {
           content: [
             {
               type: "text" as const,
-              text: `❌ Error en modo estricto: No se puede actualizar debido a inconsistencias de idioma:\n\n${warnings.join('\n')}\n\nPor favor, corrige el contenido antes de actualizar.`,
+              text: `❌ Error en modo estricto: No se puede actualizar debido a inconsistencias de idioma:\n\n${warnings.join(
+                "\n"
+              )}\n\nPor favor, corrige el contenido antes de actualizar.`,
             },
           ],
           isError: true,
@@ -101,15 +107,11 @@ export const updateToolHandler = async (params: {
     let validationResults = null;
 
     if (params.validateBeforeUpdate !== false && params.locale) {
-      validationResults = validateDocumentLanguage(
-        result.data,
-        params.locale,
-        {
-          checkMixedLanguages: true,
-          minimumConfidence: 30,
-          strictMode: false, // Don't fail after successful update
-        }
-      );
+      validationResults = validateDocumentLanguage(result.data, params.locale, {
+        checkMixedLanguages: true,
+        minimumConfidence: 30,
+        strictMode: false, // Don't fail after successful update
+      });
 
       if (!validationResults.isValid) {
         validationMessage = formatValidationResults(validationResults);
@@ -119,7 +121,9 @@ export const updateToolHandler = async (params: {
     // Include pre-update warnings if any
     let warningsMessage = "";
     if (warnings.length > 0) {
-      warningsMessage = `\n\n⚠️ Advertencias pre-actualización:\n${warnings.join('\n')}`;
+      warningsMessage = `\n\n⚠️ Advertencias pre-actualización:\n${warnings.join(
+        "\n"
+      )}`;
     }
 
     const output = {
@@ -138,7 +142,11 @@ export const updateToolHandler = async (params: {
             params.contentType
           }${
             params.locale ? ` (locale: ${params.locale})` : ""
-          }${warningsMessage}${validationMessage}\n\n${JSON.stringify(output, null, 2)}`,
+          }${warningsMessage}${validationMessage}\n\n${JSON.stringify(
+            output,
+            null,
+            2
+          )}`,
         },
       ],
       structuredContent: output,
